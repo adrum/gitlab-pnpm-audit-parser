@@ -1,23 +1,32 @@
 {
-  "name": "gitlab-npm-audit-parser",
-  "version": "1.0.4",
-  "description": "NPM Audit parser for GitLab dependency scanning",
+  "name": "gitlab-pnpm-audit-parser",
+  "version": "1.0.0",
+  "description": "pnpm Audit parser for GitLab dependency scanning",
   "bin": "parse.js",
   "main": "parse.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run --silent test:v1; npm run --silent test:v2;",
+    "test:v1": "printf 'v1: '; cat test/v1_report.json | ./parse.js -o GL-report.1.json >/dev/null && diff -q GL-report.1.json test/snapshot/GL-report.1.json && echo success!; RC=$?; rm GL-report.1.json; exit $RC",
+    "test:v2": "printf 'v2: '; cat test/v2_report.json | ./parse.js -o GL-report.2.json >/dev/null && diff -q GL-report.2.json test/snapshot/GL-report.2.json && echo success!; RC=$?; rm GL-report.2.json; exit $RC"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:mgibeau/gitlab-npm-audit-parser.git"
+    "url": "git@github.com:adrum/gitlab-[npm-audit-parser.git"
   },
   "keywords": [
     "gitlab"
   ],
-  "author": "Maxime Gibeau",
+  "author": "Austin Drummond",
+  "contributors": [
+    {
+      "name": "Austin Drummond",
+      "email": null,
+      "url": "https://github.com/adrum"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
     "commander": "^2.18.0"

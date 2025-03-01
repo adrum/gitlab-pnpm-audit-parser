@@ -1,7 +1,7 @@
-# GitLab parser for NPM Audit
+# GitLab parser for PNPM Audit
 
 ```
-Usage: gitlab-npm-audit-parser [options]
+Usage: gitlab-pnpm-audit-parser [options]
 
 Options:
 
@@ -15,21 +15,28 @@ Options:
 Install this package.
 
 ```
-npm install --save-dev gitlab-npm-audit-parser
+npm install --save-dev gitlab-pnpm-audit-parser
 ```
 
 Add the following job to _.gitlab-ci.yml_
 
 ```yaml
 dependency scanning:
-  image: node:10-alpine
+  image: node:20-alpine
+  before_script:
+    - npm i -g corepack@latest
+    - corepack enable
+    - corepack prepare pnpm@latest-9 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
-    - npm ci
-    - npm audit --json | npx gitlab-npm-audit-parser -o gl-dependency-scanning.json
+    - pnpm i
+    - pnpm audit --format=json | npx gitlab-pnpm-audit-parser -o gl-dependency-scanning.json
   artifacts:
     reports:
       dependency_scanning: gl-dependency-scanning.json
 ```
+
+NOTE: If you use a `npm run-script` to call `npm audit` You must add the option `--silent` to `npm run` or have `.npmrc` set the NPM loglevel to silent otherwise the shell output will conflict with the stdin piping to this parser and cause an error.
 
 ## Test
 
