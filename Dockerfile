@@ -1,15 +1,21 @@
 # syntax=docker/dockerfile:1.7
-FROM node:24-alpine
 
-WORKDIR /app
+FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS builder
 
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+WORKDIR /src
+COPY go.mod ./
+COPY main.go ./
 
-COPY parse.js ./
-COPY lib ./lib
+ARG TARGETOS
+ARG TARGETARCH
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -trimpath -ldflags="-s -w" -o /out/gitlab-pnpm-audit-parser .
+
+FROM scratch
+
+COPY --from=builder /out/gitlab-pnpm-audit-parser /usr/local/bin/gitlab-pnpm-audit-parser
 
 WORKDIR /src
 
-ENTRYPOINT ["node", "/app/parse.js"]
+ENTRYPOINT ["/usr/local/bin/gitlab-pnpm-audit-parser"]
 CMD ["--help"]
