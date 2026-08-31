@@ -2,7 +2,9 @@
   "name": "gitlab-pnpm-audit-parser",
   "version": "1.0.3",
   "description": "pnpm Audit parser for GitLab dependency scanning",
-  "bin": "parse.js",
+  "bin": {
+    "gitlab-pnpm-audit-parser": "parse.js"
+  },
   "main": "parse.js",
   "directories": {
     "test": "test"
@@ -15,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:adrum/gitlab-[npm-audit-parser.git"
+    "url": "git+https://github.com/adrum/gitlab-pnpm-audit-parser.git"
   },
   "keywords": [
     "gitlab"
